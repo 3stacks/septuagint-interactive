@@ -1,0 +1,133 @@
+---
+import "../styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+	</head>
+	<body>
+		<div class="max-w-[450px] mx-auto" id="parent">
+			<h1>Γένεσις - Genesis</h1>
+			<h2>Γένεσις - Κεφάλαιο 1</h2>
+			<span
+					id="floating_definition"
+					class="w-64 p-4 bg-white shadow-md rounded-md"
+				>
+				<button type="button" id="close_button">X</button>
+					<dl class="overflow-hidden">
+						<dt>Base word</dt>
+						<dd id="base"></dd>
+						<dt>Transliteration</dt>
+						<dd id="transliteration"></dd>
+						<dt>Definition</dt>
+						<dd id="definition"></dd>
+						<dt>Strong's link</dt>
+						<dd class="overflow-ellipsis">
+							<a id="link" href="https://www.blueletterbible.org/lexicon/g1722/" target="_blank" rel="noreferrer noopener" class="text-blue-500 underline">https://www.blueletterbible.org/lexicon/g1722/</a>
+						</dd>
+					</dl>
+				</span>
+			<p class="paragraph prose">
+			
+				<span class="definition" data-reference="g1722">ΕΝ</span> <span class="definition" data-reference="g746">ἀρχῇ</span> ἐποίησεν
+				ὁ <span class="definition" data-reference="g2316">Θεὸς</span> τὸν οὐρανὸν καὶ τὴν γῆν. 2 ἡ δὲ γῆ ἦν ἀόρατος καὶ ἀκατασκεύαστος,
+				καὶ σκότος ἐπάνω τῆς ἀβύσσου, καὶ πνεῦμα Θεοῦ ἐπεφέρετο ἐπάνω τοῦ
+				ὕδατος. 3 καὶ εἶπεν ὁ Θεός· γενηθήτω φῶς· καὶ ἐγένετο φῶς. 4 καὶ
+				εἶδεν ὁ Θεὸς τὸ φῶς, ὅτι καλόν· καὶ διεχώρισεν ὁ Θεὸς τὸ φῶς, ὅτι
+				καλόν· καὶ διεχώρισεν ὁ Θεὸς ἀνὰ μέσον τοῦ φωτὸς καὶ ἀνὰ μέσον τοῦ
+				σκότους. 5 καὶ ἐκάλεσεν ὁ Θεὸς τὸ φῶς ἡμέραν καὶ τὸ σκότος ἐκάλεσε
+				νύκτα. καὶ ἐγένετο ἑσπέρα καὶ ἐγένετο πρωΐ, ἡμέρα μία.
+			</p>
+		</div>
+	</body>
+</html>
+
+<script>
+	const definitions = {
+		g746: {
+			base: 'ἀρχή',
+			transliteration: 'archē',
+			definition: 'beginning, origin'
+		},
+		g1722: {
+			base: "ἐν",
+			transliteration: "en",
+			definition: "in, by, with etc.",
+		},
+		g2316: {
+			base: 'Θεὸς',
+			transliteration: 'theos',
+			definition: 'a god or goddess, a general name of deities or divinities'
+		}
+	};
+
+	let activeDefinition = null;
+
+	const definitionEl = document.querySelector(
+					"#floating_definition",
+				)!;
+	const closeButton = document.querySelector('#close_button');
+	console.log(closeButton)
+	closeButton?.addEventListener('click', event => {
+		console.log('here')
+		activeDefinition = null;
+
+		console.log(definitionEl)
+		document.querySelector('#parent')?.appendChild(definitionEl);
+definitionEl.setAttribute('hidden', 'true')
+	});
+
+	Array.from(document.querySelectorAll(".paragraph")).forEach((p) => {
+		Array.from(p.querySelectorAll("span.definition")).forEach((span) => {
+			span.addEventListener("click", () => {
+				activeDefinition = span;
+
+				
+				const strongsReference =span.getAttribute(
+							"data-reference",
+						) as keyof typeof definitions;
+				const definition =
+					definitions[
+						strongsReference
+					];
+
+				const baseEl = definitionEl?.querySelector("#base")!;
+				const transliteration =
+					definitionEl?.querySelector("#transliteration")!;
+				const defEl = definitionEl?.querySelector("#definition")!;
+				const linkEl = definitionEl?.querySelector('#link')!;
+
+				baseEl.textContent = definition.base;
+				transliteration.textContent = definition.transliteration;
+				defEl.textContent = definition.definition;
+				linkEl.setAttribute('href', `https://www.blueletterbible.org/lexicon/${strongsReference}/`);
+				linkEl.textContent = `https://www.blueletterbible.org/lexicon/${strongsReference}/`;
+
+				span.appendChild(definitionEl);
+
+				definitionEl.removeAttribute("hidden");
+
+
+			});
+		});
+	});
+</script>
+
+<style>
+	.definition {
+		text-decoration: underline;
+		cursor: pointer;
+		position: relative;
+	}
+
+	#floating_definition {
+		position: absolute;
+		bottom: 0;
+		transform: translate(-50%, 100%);
+		left: 50%;
+	}
+</style>
