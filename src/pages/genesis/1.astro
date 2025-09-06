@@ -1,0 +1,290 @@
+---
+import "../../styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libertinus+Serif+Display&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<div class="max-w-[640px] mx-auto" id="parent">
+			<h1 class="mb-4 font-bold text-4xl text-center">Γένεσις</h1>
+			<h2 class="mb-2 font-bold text-2xl text-center">Γένεσις - Κεφάλαιο 1</h2>
+			<span
+				id="floating_definition"
+				class="w-64 p-4 bg-white shadow-md rounded-md z-20"
+			>
+				<button
+					type="button"
+					id="close_button"
+					class="absolute top-4 right-4">X</button
+				>
+				<dl class="overflow-hidden">
+					<dt>Base word</dt>
+					<dd id="base"></dd>
+					<dt>Transliteration</dt>
+					<dd id="transliteration"></dd>
+					<dt>Definition</dt>
+					<dd id="definition"></dd>
+					<dt>Strong's link</dt>
+					<dd class="overflow-ellipsis">
+						<a
+							id="link"
+							href="https://www.blueletterbible.org/lexicon/g1722/"
+							target="_blank"
+							rel="noreferrer noopener"
+							class="text-blue-500 underline"
+							>https://www.blueletterbible.org/lexicon/g1722/</a
+						>
+					</dd>
+				</dl>
+			</span>
+			<p class="paragraph">
+				1 <span class="definition" data-reference="g1722">ΕΝ</span>
+				<span class="definition" data-reference="g746">ἀρχῇ</span> ἐποίησεν
+				ὁ <span class="definition" data-reference="g2316">Θεὸς</span> τὸν
+				οὐρανὸν <span class="definition" data-reference="g2532"
+					>καὶ</span
+				> τὴν γῆν. 
+			</p>
+			<p class="paragraph">
+				2 ἡ δὲ γῆ ἦν ἀόρατος <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> ἀκατασκεύαστος,
+				<span class="definition" data-reference="g2532">καὶ</span> σκότος
+				ἐπάνω τῆς ἀβύσσου, <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> πνεῦμα <span class="definition" data-reference="g2316"
+					>Θεοῦ</span
+				> ἐπεφέρετο ἐπάνω τοῦ ὕδατος. 
+			</p>
+			<p class="paragraph">
+				3 <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> εἶπεν ὁ <span class="definition" data-reference="g2316">Θεός</span>· γενηθήτω φῶς· <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> ἐγένετο φῶς. 
+			</p>
+			<p class="paragraph">
+				4 <span class="definition" data-reference="g2532"
+					>καὶ</span
+				>
+				εἶδεν ὁ <span class="definition" data-reference="g2316"
+					>Θεὸς</span
+				> τὸ φῶς, ὅτι καλόν· <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> διεχώρισεν ὁ <span class="definition" data-reference="g2316"
+					>Θεὸς</span
+				> τὸ φῶς, ὅτι καλόν· <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> διεχώρισεν ὁ <span class="definition" data-reference="g2316"
+					>Θεὸς</span
+				> ἀνὰ μέσον τοῦ φωτὸς <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> ἀνὰ μέσον τοῦ σκότους. 
+			</p>
+			<p class="paragraph">
+				5 <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> ἐκάλεσεν ὁ <span class="definition" data-reference="g2316"
+					>Θεὸς</span
+				> τὸ φῶς ἡμέραν <span class="definition" data-reference="g2532"
+					>καὶ</span
+				> τὸ σκότος ἐκάλεσε νύκτα. <span
+					class="definition"
+					data-reference="g2532">καὶ</span
+				> ἐγένετο ἑσπέρα <span class="definition" data-reference="g2532"
+					>καὶ</span
+				> ἐγένετο πρωΐ, ἡμέρα μία.
+			</p>
+			 <p class="paragraph">6 Καὶ εἶπεν ὁ Θεός· γενηθήτω στερέωμα ἐν μέσῳ τοῦ ὕδατος καὶ ἔστω διαχωρίζον ἀνὰ μέσον ὕδατος καὶ ὕδατος. καὶ ἐγένετο οὕτως.</p> 
+			 <p class="paragraph">
+				7 καὶ ἐποίησεν ὁ Θεὸς τὸ στερέωμα, καὶ διεχώρισεν ὁ Θεὸς ἀνὰ μέσον τοῦ ὕδατος, ὃ ἦν ὑποκάτω τοῦ στερεώματος, καὶ ἀναμέσον τοῦ ὕδατος τοῦ ἐπάνω τοῦ στερεώματος. 
+			 </p>
+			 <p class="paragraph">8 καὶ ἐκάλεσεν ὁ Θεὸς τὸ στερέωμα οὐρανόν. καὶ εἶδεν ὁ Θεός, ὅτι καλόν, καὶ ἐγένετο ἑσπέρα καὶ ἐγένετο πρωΐ, ἡμέρα δευτέρα.</p>
+
+  <p class="paragraph">9 Καὶ εἶπεν ὁ Θεός· συναχθήτω τὸ ὕδωρ τὸ ὑποκάτω τοῦ οὐρανοῦ εἰς συναγωγὴν μίαν, καὶ ὀφθήτω ἡ ξηρά. καὶ ἐγένετο οὕτως. καὶ συνήχθη τὸ ὕδωρ τὸ ὑποκάτω τοῦ οὐρανοῦ εἰς τὰς συναγωγὰς αὐτῶν, καὶ ὤφθη ἡ ξηρά. </p>
+  <p class="paragraph">
+	10 καὶ ἐκάλεσεν ὁ Θεὸς τὴν ξηρὰν γῆν καὶ τὰ συστήματα τῶν ὑδάτων ἐκάλεσε θαλάσσας. καὶ εἶδεν ὁ Θεός, ὅτι καλόν. 
+  </p>
+  <p class="paragraph">11 καὶ εἶπεν ὁ Θεός· βλαστησάτω ἡ γῆ βοτάνην χόρτου σπεῖρον σπέρμα κατὰ γένος καὶ καθ᾿ ὁμοιότητα, καὶ ξύλον κάρπιμον ποιοῦν καρπόν, οὗ τὸ σπέρμα αὐτοῦ ἐν αὐτῷ κατὰ γένος ἐπὶ τῆς γῆς. καὶ ἐγένετο οὕτως. </p>
+  <p class="paragraph">
+	12 καὶ ἐξήνεγκεν ἡ γῆ βοτάνην χόρτου σπεῖρον σπέρμα κατὰ γένος καὶ καθ᾿ ὁμοιότητα, καὶ ξύλον κάρπιμον ποιοῦν καρπόν, οὗ τὸ σπέρμα αὐτοῦ ἐν αὐτῷ κατὰ γένος ἐπὶ τῆς γῆς. 
+  </p>
+  <p class="paragraph">
+	13 καὶ εἶδεν ὁ Θεός, ὅτι καλόν. καὶ ἐγένετο ἑσπέρα καὶ ἐγένετο πρωΐ, ἡμέρα τρίτη.
+  </p>
+
+  <p class="paragraph">14 Καὶ εἶπεν ὁ Θεός· γενηθήτωσαν φωστῆρες ἐν τῷ στερεώματι τοῦ οὐρανοῦ εἰς φαῦσιν ἐπὶ τῆς γῆς, τοῦ διαχωρίζειν ἀνὰ μέσον τῆς ἡμέρας καὶ ἀνὰ μέσον τῆς νυκτός· καὶ ἔστωσαν εἰς σημεῖα καὶ εἰς καιροὺς καὶ εἰς ἡμέρας καὶ εἰς ἐνιαυτούς· </p>
+  <p class="paragraph">
+	15 καὶ ἔστωσαν εἰς φαῦσιν ἐν τῷ στερεώματι τοῦ οὐρανοῦ, ὥστε φαίνειν ἐπὶ τῆς γῆς. καὶ ἐγένετο οὕτως. 
+  </p>
+  <p class="paragraph">
+	16 καὶ ἐποίησεν ὁ Θεὸς τοὺς δύο φωστῆρας τοὺς μεγάλους, τὸν φωστῆρα τὸν μέγαν εἰς ἀρχὰς τῆς ἡμέρας καὶ τὸν φωστῆρα τὸν ἐλάσσω εἰς ἀρχὰς τῆς νυκτός, καὶ τοὺς ἀστέρας. 
+  </p>
+  <p class="paragraph">17 καὶ ἔθετο αὐτοὺς ὁ Θεὸς ἐν τῷ στερεώματι τοῦ οὐρανοῦ, ὥστε φαίνειν ἐπὶ τῆς γῆς </p>
+
+  <p class="paragraph">
+	18 καὶ ἄρχειν τῆς ἡμέρας καὶ τῆς νυκτὸς καὶ διαχωρίζειν ἀνὰ μέσον τοῦ φωτὸς καὶ ἀνὰ μέσον τοῦ σκότους. καὶ εἶδεν ὁ Θεός, ὅτι καλόν. 
+  </p>
+  <p class="paragraph">
+	19 καὶ ἐγένετο ἑσπέρα καὶ ἐγένετο πρωΐ, ἡμέρα τετάρτη.
+  </p>
+<p class="paragraph">20 Καὶ εἶπεν ὁ Θεός· ἐξαγαγέτω τὰ ὕδατα ἑρπετὰ ψυχῶν ζωσῶν καὶ πετεινὰ πετόμενα ἐπὶ τῆς γῆς κατὰ τὸ στερέωμα τοῦ οὐρανοῦ. καὶ ἐγένετο οὕτως.</p>
+   <p class="paragraph">21 καὶ ἐποίησεν ὁ Θεὸς τὰ κήτη τὰ μεγάλα καὶ πᾶσαν ψυχὴν ζῴων ἑρπετῶν, ἃ ἐξήγαγε τὰ ὕδατα κατὰ γένη αὐτῶν, καὶ πᾶν πετεινὸν πτερωτὸν κατὰ γένος. καὶ εἶδεν ὁ Θεός, ὅτι καλά. </p>
+   <p class="paragraph">22 καὶ εὐλόγησεν αὐτὰ ὁ Θεός, λέγων· αὐξάνεσθε καὶ πληθύνεσθε καὶ πληρώσατε τὰ ὕδατα ἐν ταῖς θαλάσσαις, καὶ τὰ πετεινὰ πληθυνέσθωσαν ἐπὶ τῆς γῆς. </p>
+   <p class="paragraph">
+	23 καὶ ἐγένετο ἑσπέρα καὶ ἐγένετο πρωΐ, ἡμέρα πέμπτη.
+   </p>
+
+  <p class="paragraph">
+	24 Καὶ εἶπεν ὁ Θεός· ἐξαγαγέτω ἡ γῆ ψυχὴν ζῶσαν κατὰ γένος, τετράποδα καὶ ἑρπετὰ καὶ θηρία τῆς γῆς κατὰ γένος. καὶ ἐγένετο οὕτως. 
+  </p>
+  <p class="paragraph">
+	25 καὶ ἐποίησεν ὁ Θεὸς τὰ θηρία τῆς γῆς κατὰ γένος, καὶ τὰ κτήνη κατὰ γένος αὐτῶν καὶ πάντα τὰ ἑρπετὰ τῆς γῆς κατὰ γένος αὐτῶν. καὶ εἶδεν ὁ Θεός, ὅτι καλά. 
+  </p>
+  <p class="paragraph">
+	26 καὶ εἶπεν ὁ Θεός· ποιήσωμεν ἄνθρωπον κατ᾿ εἰκόνα ἡμετέραν καὶ καθ᾿ ὁμοίωσιν, καὶ ἀρχέτωσαν τῶν ἰχθύων τῆς θαλάσσης καὶ τῶν πετεινῶν τοῦ οὐρανοῦ καὶ τῶν κτηνῶν καὶ πάσης τῆς γῆς καὶ πάντων τῶν ἑρπετῶν τῶν ἑρπόντων ἐπὶ τῆς γῆς. 
+  </p>
+  <p class="paragraph">
+	27 καὶ ἐποίησεν ὁ Θεὸς τὸν ἄνθρωπον, κατ᾿ εἰκόνα Θεοῦ ἐποίησεν αὐτόν, ἄρσεν καὶ θῆλυ ἐποίησεν αὐτούς. 
+  </p>
+  <p class="paragraph">
+	28 καὶ εὐλόγησεν αὐτοὺς ὁ Θεός, λέγων· αὐξάνεσθε καὶ πληθύνεσθε καὶ πληρώσατε τὴν γῆν καὶ κατακυριεύσατε αὐτῆς καὶ ἄρχετε τῶν ἰχθύων τῆς θαλάσσης καὶ τῶν πετεινῶν τοῦ οὐρανοῦ καὶ πάντων τῶν κτηνῶν καὶ πάσης τῆς γῆς καὶ πάντων τῶν ἑρπετῶν τῶν ἑρπόντων ἐπὶ τῆς γῆς. 
+	
+  </p>
+  <p class="paragraph">
+	29 καὶ εἶπεν ὁ Θεός· ἰδοὺ δέδωκα ὑμῖν πάντα χόρτον σπόριμον σπεῖρον σπέρμα, ὅ ἐστιν ἐπάνω πάσης τῆς γῆς, καὶ πᾶν ξύλον, ὃ ἔχει ἐν ἑαυτῷ καρπὸν σπέρματος σπορίμου, ὑμῖν ἔσται εἰς βρῶσιν· 
+
+  </p>
+  <p class="paragraph">
+	30 καὶ πᾶσι τοῖς θηρίοις τῆς γῆς καὶ πᾶσι τοῖς πετεινοῖς τοῦ οὐρανοῦ καὶ παντὶ ἑρπετῷ ἕρποντι ἐπὶ τῆς γῆς, ὃ ἔχει ἐν ἑαυτῷ ψυχὴν ζωῆς, καὶ πάντα χόρτον χλωρὸν εἰς βρῶσιν. καὶ ἐγένετο οὕτως. 
+  </p>
+  <p class="paragraph">
+	31 καὶ εἶδεν ὁ Θεὸς τὰ πάντα, ὅσα ἐποίησε, καὶ ἰδοὺ καλὰ λίαν. καὶ ἐγένετο ἑσπέρα καὶ ἐγένετο πρωΐ, ἡμέρα ἕκτη.
+  </p>
+		</div>
+	</body>
+</html>
+
+<script>
+	const definitions = {
+		g746: {
+			base: "ἀρχή",
+			transliteration: "archē",
+			definition: "beginning, origin",
+		},
+		g1722: {
+			base: "ἐν",
+			transliteration: "en",
+			definition: "in, by, with etc.",
+		},
+		g2316: {
+			base: "Θεὸς",
+			transliteration: "theos",
+			definition:
+				"a god or goddess, a general name of deities or divinities",
+		},
+		g2532: {
+			base: "καί",
+			transliteration: "kai",
+			definition: "and, also, even, indeed, but",
+		},
+	};
+
+	let activeDefinition = null;
+
+	const definitionEl = document.querySelector("#floating_definition")!;
+	const closeButton = document.querySelector("#close_button");
+	console.log(closeButton);
+	closeButton?.addEventListener("click", (event) => {
+		activeDefinition = null;
+
+		document.querySelector("#parent")?.appendChild(definitionEl);
+		definitionEl.setAttribute("hidden", "true");
+	});
+
+	Array.from(document.querySelectorAll(".paragraph")).forEach((p) => {
+		Array.from(p.querySelectorAll("span.definition")).forEach((span) => {
+			span.addEventListener("click", () => {
+				activeDefinition = span;
+
+				const strongsReference = span.getAttribute(
+					"data-reference",
+				) as keyof typeof definitions;
+				const definition = definitions[strongsReference];
+
+				const baseEl = definitionEl?.querySelector("#base")!;
+				const transliteration =
+					definitionEl?.querySelector("#transliteration")!;
+				const defEl = definitionEl?.querySelector("#definition")!;
+				const linkEl = definitionEl?.querySelector("#link")!;
+
+				baseEl.textContent = definition.base;
+				transliteration.textContent = definition.transliteration;
+				defEl.textContent = definition.definition;
+				linkEl.setAttribute(
+					"href",
+					`https://www.blueletterbible.org/lexicon/${strongsReference}/`,
+				);
+				linkEl.textContent = `https://www.blueletterbible.org/lexicon/${strongsReference}/`;
+
+				span.appendChild(definitionEl);
+
+				definitionEl.removeAttribute("hidden");
+			});
+		});
+	});
+</script>
+
+<style>
+	.definition {
+		text-decoration: underline;
+		cursor: pointer;
+		position: relative;
+	}
+
+	#floating_definition {
+		position: absolute;
+		bottom: 0;
+		transform: translate(-50%, 100%);
+		left: 50%;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,h6,p.paragraph {
+		font-family: "Libertinus Serif Display", system-ui;
+  font-weight: 400;
+  font-style: normal;
+	}
+
+	p.paragraph {
+		margin-bottom: 12px;
+		text-align: justify;
+		line-height: 1.2;
+		  
+  font-size: 18px;
+
+		&:first-letter {
+			font-size: 110%;
+			font-weight: bold;
+		}
+	}
+</style>
