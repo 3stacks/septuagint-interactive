@@ -1,0 +1,46 @@
+---
+interface Props {
+	number: number;
+	text: string;
+}
+
+const { number, text } = Astro.props;
+---
+
+<p class="verse">
+	<span class="verse-number">{number}</span>
+	<span class="verse-text" set:html={text} />
+</p>
+
+<style>
+	.verse {
+		font-family: "Libertinus Serif Display", Georgia, serif;
+		font-size: 1.125rem;
+		line-height: 1.8;
+		margin-bottom: 0.75rem;
+		text-align: justify;
+		hyphens: auto;
+	}
+
+	.verse-number {
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #78716c;
+		vertical-align: super;
+		margin-right: 0.25rem;
+		font-family: system-ui, sans-serif;
+	}
+
+	.verse-text :global(.greek-word) {
+		text-decoration: underline;
+		text-decoration-color: #d6d3d1;
+		text-underline-offset: 3px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+	}
+
+	.verse-text :global(.greek-word:hover) {
+		text-decoration-color: #3b82f6;
+		color: #1d4ed8;
+	}
+</style>

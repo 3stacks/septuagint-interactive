@@ -1,22 +1,137 @@
 ---
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getBooks, bookSlugs, bookNames } from "../lib/api";
+
+const books = await getBooks();
+
+// Group books by category
+const torah = books.filter(b => [1, 2, 3, 4, 5].includes(b.bookid));
+const history = books.filter(b => [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17].includes(b.bookid));
+const wisdom = books.filter(b => [18, 19, 20, 21, 22].includes(b.bookid));
+const prophets = books.filter(b => [23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39].includes(b.bookid));
+const deuterocanon = books.filter(b => b.bookid >= 67);
+
+function getBookLink(bookId: number) {
+	return bookSlugs[bookId] || `book-${bookId}`;
+}
+
+function getEnglishName(bookId: number) {
+	const slug = bookSlugs[bookId];
+	return slug ? bookNames[slug] : null;
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libertinus+Serif+Display&display=swap" rel="stylesheet">
-	</head>
-	<body>
-		<ul>
-			<li>
-				<a href="/genesis">Genesis</a>
-			</li>
-		</ul>
-	</body>
-</html>
+<BaseLayout title="Septuagint Interactive - Greek Old Testament">
+	<header class="text-center mb-12">
+		<h1 class="text-5xl font-serif greek-text mb-4">Ἡ Παλαιὰ Διαθήκη</h1>
+		<h2 class="text-2xl text-stone-600 mb-2">The Septuagint</h2>
+		<p class="text-stone-500 max-w-xl mx-auto">
+			Interactive Greek Old Testament with Strong's definitions.
+			Click on underlined words to see their meaning.
+		</p>
+	</header>
+
+	<div class="space-y-10">
+		<section>
+			<h3 class="text-lg font-semibold text-stone-700 mb-4 pb-2 border-b border-stone-200">
+				Torah / Pentateuch
+			</h3>
+			<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+				{torah.map((book) => (
+					<a
+						href={`/${getBookLink(book.bookid)}`}
+						class="group p-4 rounded-lg border border-stone-200 hover:border-blue-500 hover:bg-blue-50 transition"
+					>
+						<div class="font-serif greek-text text-lg group-hover:text-blue-700">{book.name}</div>
+						<div class="text-sm text-stone-500 group-hover:text-blue-600">
+							{getEnglishName(book.bookid) || book.name}
+						</div>
+						<div class="text-xs text-stone-400 mt-1">{book.chapters} ch.</div>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<section>
+			<h3 class="text-lg font-semibold text-stone-700 mb-4 pb-2 border-b border-stone-200">
+				Historical Books
+			</h3>
+			<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+				{history.map((book) => (
+					<a
+						href={`/${getBookLink(book.bookid)}`}
+						class="group p-4 rounded-lg border border-stone-200 hover:border-blue-500 hover:bg-blue-50 transition"
+					>
+						<div class="font-serif greek-text text-lg group-hover:text-blue-700">{book.name}</div>
+						<div class="text-sm text-stone-500 group-hover:text-blue-600">
+							{getEnglishName(book.bookid) || book.name}
+						</div>
+						<div class="text-xs text-stone-400 mt-1">{book.chapters} ch.</div>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<section>
+			<h3 class="text-lg font-semibold text-stone-700 mb-4 pb-2 border-b border-stone-200">
+				Wisdom Literature
+			</h3>
+			<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+				{wisdom.map((book) => (
+					<a
+						href={`/${getBookLink(book.bookid)}`}
+						class="group p-4 rounded-lg border border-stone-200 hover:border-blue-500 hover:bg-blue-50 transition"
+					>
+						<div class="font-serif greek-text text-lg group-hover:text-blue-700">{book.name}</div>
+						<div class="text-sm text-stone-500 group-hover:text-blue-600">
+							{getEnglishName(book.bookid) || book.name}
+						</div>
+						<div class="text-xs text-stone-400 mt-1">{book.chapters} ch.</div>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<section>
+			<h3 class="text-lg font-semibold text-stone-700 mb-4 pb-2 border-b border-stone-200">
+				Prophets
+			</h3>
+			<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+				{prophets.map((book) => (
+					<a
+						href={`/${getBookLink(book.bookid)}`}
+						class="group p-4 rounded-lg border border-stone-200 hover:border-blue-500 hover:bg-blue-50 transition"
+					>
+						<div class="font-serif greek-text text-lg group-hover:text-blue-700">{book.name}</div>
+						<div class="text-sm text-stone-500 group-hover:text-blue-600">
+							{getEnglishName(book.bookid) || book.name}
+						</div>
+						<div class="text-xs text-stone-400 mt-1">{book.chapters} ch.</div>
+					</a>
+				))}
+			</div>
+		</section>
+
+		{deuterocanon.length > 0 && (
+			<section>
+				<h3 class="text-lg font-semibold text-stone-700 mb-4 pb-2 border-b border-stone-200">
+					Deuterocanonical Books
+				</h3>
+				<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+					{deuterocanon.map((book) => (
+						<a
+							href={`/${getBookLink(book.bookid)}`}
+							class="group p-4 rounded-lg border border-stone-200 hover:border-blue-500 hover:bg-blue-50 transition"
+						>
+							<div class="font-serif greek-text text-lg group-hover:text-blue-700">{book.name}</div>
+							<div class="text-sm text-stone-500 group-hover:text-blue-600">
+								{getEnglishName(book.bookid) || book.name}
+							</div>
+							<div class="text-xs text-stone-400 mt-1">{book.chapters} ch.</div>
+						</a>
+					))}
+				</div>
+			</section>
+		)}
+	</div>
+</BaseLayout>

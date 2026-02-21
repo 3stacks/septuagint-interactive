@@ -1,0 +1,191 @@
+---
+// Floating definition popup component
+---
+
+<div
+	id="definition-popup"
+	class="hidden fixed md:absolute z-50 w-80 max-w-[90vw] p-4 bg-white shadow-xl rounded-lg border border-stone-200"
+	role="dialog"
+	aria-label="Word definition"
+>
+	<button
+		type="button"
+		id="close-popup"
+		class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded"
+		aria-label="Close"
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+		</svg>
+	</button>
+
+	<div id="popup-loading" class="text-center py-4 text-stone-500">
+		Loading...
+	</div>
+
+	<div id="popup-content" class="hidden">
+		<div class="mb-3">
+			<span id="popup-lexeme" class="text-2xl font-serif"></span>
+			<span id="popup-transliteration" class="text-stone-500 ml-2"></span>
+		</div>
+
+		<div id="popup-pronunciation" class="text-sm text-stone-500 mb-3"></div>
+
+		<div id="popup-pos" class="text-xs uppercase tracking-wide text-stone-400 mb-2"></div>
+
+		<div id="popup-definition" class="text-stone-700 leading-relaxed mb-4"></div>
+
+		<a
+			id="popup-link"
+			href="#"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 underline"
+		>
+			View on Blue Letter Bible
+			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/>
+			</svg>
+		</a>
+	</div>
+
+	<div id="popup-error" class="hidden text-center py-4 text-red-500">
+		Definition not found
+	</div>
+</div>
+
+<script>
+	const popup = document.getElementById('definition-popup')!;
+	const closeBtn = document.getElementById('close-popup')!;
+	const loadingEl = document.getElementById('popup-loading')!;
+	const contentEl = document.getElementById('popup-content')!;
+	const errorEl = document.getElementById('popup-error')!;
+
+	let currentTarget: HTMLElement | null = null;
+
+	// Cache for definitions
+	const definitionCache = new Map<string, any>();
+
+	async function fetchDefinition(reference: string) {
+		if (definitionCache.has(reference)) {
+			return definitionCache.get(reference);
+		}
+
+		const response = await fetch(
+			`https://bolls.life/dictionary-definition/BDBT/${reference.toUpperCase()}/`
+		);
+
+		if (!response.ok) {
+			throw new Error('Failed to fetch');
+		}
+
+		const data = await response.json();
+		const result = data[0] || null;
+		definitionCache.set(reference, result);
+		return result;
+	}
+
+	function parseDefinitionHtml(html: string): string {
+		// Extract main definitions
+		const defs: string[] = [];
+		const matches = html.matchAll(/<p><b>(\d+)\.<\/b>\s*([^<]+)<\/p>/g);
+		for (const match of matches) {
+			defs.push(`${match[1]}. ${match[2].trim()}`);
+		}
+		return defs.join('\n') || html.replace(/<[^>]+>/g, ' ').trim().slice(0, 200);
+	}
+
+	function showPopup(target: HTMLElement, reference: string) {
+		currentTarget = target;
+
+		// Position popup
+		const rect = target.getBoundingClientRect();
+		const isMobile = window.innerWidth < 768;
+
+		if (isMobile) {
+			// Fixed position at bottom on mobile
+			popup.style.position = 'fixed';
+			popup.style.bottom = '1rem';
+			popup.style.left = '50%';
+			popup.style.transform = 'translateX(-50%)';
+			popup.style.top = 'auto';
+		} else {
+			// Position below word on desktop
+			popup.style.position = 'absolute';
+			popup.style.top = `${rect.bottom + window.scrollY + 8}px`;
+			popup.style.left = `${Math.max(16, Math.min(rect.left + window.scrollX - 100, window.innerWidth - 340))}px`;
+			popup.style.transform = 'none';
+			popup.style.bottom = 'auto';
+		}
+
+		popup.classList.remove('hidden');
+		loadingEl.classList.remove('hidden');
+		contentEl.classList.add('hidden');
+		errorEl.classList.add('hidden');
+
+		fetchDefinition(reference)
+			.then(def => {
+				if (!def) {
+					throw new Error('Not found');
+				}
+
+				loadingEl.classList.add('hidden');
+				contentEl.classList.remove('hidden');
+
+				document.getElementById('popup-lexeme')!.textContent = def.lexeme || '';
+				document.getElementById('popup-transliteration')!.textContent = def.transliteration || '';
+				document.getElementById('popup-pronunciation')!.textContent = def.pronunciation ? `/${def.pronunciation}/` : '';
+
+				// Parse part of speech from definition
+				const posMatch = def.definition?.match(/Part\(s\) of speech:\s*([^<]+)/);
+				document.getElementById('popup-pos')!.textContent = posMatch ? posMatch[1].trim() : '';
+
+				document.getElementById('popup-definition')!.textContent = parseDefinitionHtml(def.definition || '');
+
+				const link = document.getElementById('popup-link') as HTMLAnchorElement;
+				link.href = `https://www.blueletterbible.org/lexicon/${reference.toLowerCase()}/`;
+			})
+			.catch(() => {
+				loadingEl.classList.add('hidden');
+				errorEl.classList.remove('hidden');
+			});
+	}
+
+	function hidePopup() {
+		popup.classList.add('hidden');
+		currentTarget = null;
+	}
+
+	// Close button
+	closeBtn.addEventListener('click', hidePopup);
+
+	// Close on escape
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') {
+			hidePopup();
+		}
+	});
+
+	// Close when clicking outside
+	document.addEventListener('click', (e) => {
+		if (!popup.contains(e.target as Node) && e.target !== currentTarget) {
+			hidePopup();
+		}
+	});
+
+	// Listen for word clicks
+	document.addEventListener('click', (e) => {
+		const target = e.target as HTMLElement;
+		if (target.classList.contains('greek-word') && target.dataset.strongs) {
+			e.preventDefault();
+			e.stopPropagation();
+			showPopup(target, target.dataset.strongs);
+		}
+	});
+</script>
+
+<style>
+	#definition-popup {
+		font-family: system-ui, -apple-system, sans-serif;
+	}
+</style>

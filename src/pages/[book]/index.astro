@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getBooks, bookSlugs, slugToBookId, bookNames } from "../../lib/api";
+
+export async function getStaticPaths() {
+	const books = await getBooks();
+
+	return books.map((book) => ({
+		params: { book: bookSlugs[book.bookid] || `book-${book.bookid}` },
+		props: {
+			bookId: book.bookid,
+			greekName: book.name,
+			chapters: book.chapters
+		},
+	}));
+}
+
+interface Props {
+	bookId: number;
+	greekName: string;
+	chapters: number;
+}
+
+const { book } = Astro.params;
+const { bookId, greekName, chapters } = Astro.props;
+
+const englishName = bookNames[book as string] || book;
+const chapterNumbers = Array.from({ length: chapters }, (_, i) => i + 1);
+---
+
+<BaseLayout title={`${englishName} - Septuagint Interactive`}>
+	<Fragment slot="breadcrumbs">
+		<span class="text-stone-400">/</span>
+		<span class="text-stone-600">{englishName}</span>
+	</Fragment>
+
+	<header class="mb-8 text-center">
+		<h1 class="text-4xl font-serif greek-text mb-2">{greekName}</h1>
+		<h2 class="text-xl text-stone-600">{englishName}</h2>
+		<p class="text-stone-500 mt-2">{chapters} chapters</p>
+	</header>
+
+	<nav class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
+		{chapterNumbers.map((chapter) => (
+			<a
+				href={`/${book}/${chapter}`}
+				class="aspect-square flex items-center justify-center rounded-lg border border-stone-200 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 transition text-lg font-medium"
+			>
+				{chapter}
+			</a>
+		))}
+	</nav>
+
+	<div class="mt-8 text-center">
+		<a href="/" class="text-blue-600 hover:text-blue-800 underline">
+			&larr; Back to all books
+		</a>
+	</div>
+</BaseLayout>

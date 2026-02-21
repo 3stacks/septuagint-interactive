@@ -1,0 +1,316 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Verse from "../../components/Verse.astro";
+import InterlinearVerse from "../../components/InterlinearVerse.astro";
+import ChapterNav from "../../components/ChapterNav.astro";
+import DefinitionPopup from "../../components/DefinitionPopup.astro";
+import { getBooks, getChapter, bookSlugs, slugToBookId, bookNames } from "../../lib/api";
+import { chapters as genesisChapters, parseVerseText } from "../../data/genesis";
+
+export async function getStaticPaths() {
+	const books = await getBooks();
+	const paths = [];
+
+	for (const book of books) {
+		const slug = bookSlugs[book.bookid] || `book-${book.bookid}`;
+		for (let chapter = 1; chapter <= book.chapters; chapter++) {
+			paths.push({
+				params: { book: slug, chapter: String(chapter) },
+				props: {
+					bookId: book.bookid,
+					greekName: book.name,
+					chapterNum: chapter,
+					totalChapters: book.chapters
+				},
+			});
+		}
+	}
+
+	return paths;
+}
+
+interface Props {
+	bookId: number;
+	greekName: string;
+	chapterNum: number;
+	totalChapters: number;
+}
+
+const { book, chapter } = Astro.params;
+const { bookId, greekName, chapterNum, totalChapters } = Astro.props;
+
+const englishName = bookNames[book as string] || book;
+
+// Try to get local data with Strong's markup first, fall back to API
+let greekVerses: { verse: number; text: string }[] = [];
+let englishVerses: { verse: number; text: string }[] = [];
+
+if (book === "genesis" && genesisChapters[chapterNum]) {
+	// Use local data with Strong's references
+	greekVerses = genesisChapters[chapterNum].map((text, index) => ({
+		verse: index + 1,
+		text: parseVerseText(text)
+	}));
+} else {
+	// Fall back to API for Greek (no Strong's markup, but still readable)
+	try {
+		const apiVerses = await getChapter(bookId, chapterNum);
+		greekVerses = apiVerses.map(v => ({
+			verse: v.verse,
+			text: v.text
+		}));
+	} catch (e) {
+		console.error("Failed to fetch Greek chapter:", e);
+	}
+}
+
+// Fetch Brenton's English translation
+try {
+	const response = await fetch(`https://bolls.life/get-text/LXXE/${bookId}/${chapterNum}/`);
+	if (response.ok) {
+		const data = await response.json();
+		englishVerses = data.map((v: any) => ({
+			verse: v.verse,
+			text: v.text
+		}));
+	}
+} catch (e) {
+	console.error("Failed to fetch English chapter:", e);
+}
+
+// Combine verses for interlinear display
+const combinedVerses = greekVerses.map((gv, i) => ({
+	verse: gv.verse,
+	greek: gv.text,
+	english: englishVerses[i]?.text || ""
+}));
+---
+
+<BaseLayout title={`${englishName} ${chapterNum} - Septuagint Interactive`}>
+	<Fragment slot="breadcrumbs">
+		<span class="text-stone-400">/</span>
+		<a href={`/${book}`} class="text-stone-600 hover:text-stone-900">{englishName}</a>
+		<span class="text-stone-400">/</span>
+		<span class="text-stone-600">Chapter {chapterNum}</span>
+	</Fragment>
+
+	<header class="mb-6 text-center">
+		<h1 class="text-4xl font-serif greek-text mb-2">{greekName}</h1>
+		<h2 class="text-xl text-stone-600">{englishName} - Chapter {chapterNum}</h2>
+	</header>
+
+	<!-- Display Mode Toggle -->
+	<div class="flex justify-center gap-2 mb-6">
+		<button
+			id="btn-greek-only"
+			class="px-4 py-2 rounded-lg border border-stone-300 text-sm font-medium transition hover:bg-stone-100"
+		>
+			Greek Only
+		</button>
+		<button
+			id="btn-interlinear"
+			class="px-4 py-2 rounded-lg border border-blue-500 bg-blue-50 text-blue-700 text-sm font-medium transition"
+		>
+			Interlinear
+		</button>
+	</div>
+
+	<!-- Greek Only View -->
+	<article id="greek-only-view" class="prose prose-stone max-w-none hidden">
+		{greekVerses.length > 0 ? (
+			greekVerses.map((v) => (
+				<Verse number={v.verse} text={v.text} />
+			))
+		) : (
+			<p class="text-stone-500 text-center py-8">
+				Chapter content is loading or unavailable.
+			</p>
+		)}
+	</article>
+
+	<!-- Interlinear View -->
+	<article id="interlinear-view" class="max-w-none">
+		{combinedVerses.length > 0 ? (
+			combinedVerses.map((v) => (
+				<InterlinearVerse
+					number={v.verse}
+					greekText={v.greek}
+					englishText={v.english}
+				/>
+			))
+		) : (
+			<p class="text-stone-500 text-center py-8">
+				Chapter content is loading or unavailable.
+			</p>
+		)}
+	</article>
+
+	<ChapterNav
+		bookSlug={book as string}
+		currentChapter={chapterNum}
+		totalChapters={totalChapters}
+	/>
+
+	<DefinitionPopup />
+</BaseLayout>
+
+<script>
+	// Display mode toggle
+	const btnGreekOnly = document.getElementById('btn-greek-only')!;
+	const btnInterlinear = document.getElementById('btn-interlinear')!;
+	const greekOnlyView = document.getElementById('greek-only-view')!;
+	const interlinearView = document.getElementById('interlinear-view')!;
+
+	function setMode(mode: 'greek-only' | 'interlinear') {
+		if (mode === 'greek-only') {
+			greekOnlyView.classList.remove('hidden');
+			interlinearView.classList.add('hidden');
+			btnGreekOnly.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-700');
+			btnGreekOnly.classList.remove('border-stone-300');
+			btnInterlinear.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-700');
+			btnInterlinear.classList.add('border-stone-300');
+		} else {
+			greekOnlyView.classList.add('hidden');
+			interlinearView.classList.remove('hidden');
+			btnInterlinear.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-700');
+			btnInterlinear.classList.remove('border-stone-300');
+			btnGreekOnly.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-700');
+			btnGreekOnly.classList.add('border-stone-300');
+		}
+		localStorage.setItem('septuagint-display-mode', mode);
+	}
+
+	btnGreekOnly.addEventListener('click', () => setMode('greek-only'));
+	btnInterlinear.addEventListener('click', () => setMode('interlinear'));
+
+	// Restore saved preference
+	const savedMode = localStorage.getItem('septuagint-display-mode') as 'greek-only' | 'interlinear' | null;
+	if (savedMode) {
+		setMode(savedMode);
+	}
+
+	// English to Strong's mapping for word-level alignment
+	const englishToStrongs: Record<string, string[]> = {
+		"god": ["G2316"], "God": ["G2316"],
+		"lord": ["G2962"], "Lord": ["G2962"],
+		"and": ["G2532"], "And": ["G2532"],
+		"in": ["G1722"], "In": ["G1722"],
+		"beginning": ["G746"],
+		"made": ["G4160"], "make": ["G4160"], "created": ["G4160"],
+		"heaven": ["G3772"], "heavens": ["G3772"],
+		"earth": ["G1093"],
+		"light": ["G5457"],
+		"day": ["G2250"], "days": ["G2250"], "Day": ["G2250"],
+		"night": ["G3571"], "Night": ["G3571"],
+		"water": ["G5204"], "waters": ["G5204"],
+		"sea": ["G2281"], "seas": ["G2281"], "Seas": ["G2281"],
+		"spirit": ["G4151"], "Spirit": ["G4151"],
+		"man": ["G444"], "men": ["G444"],
+		"woman": ["G1135"],
+		"tree": ["G3586"], "trees": ["G3586"], "fruit-tree": ["G3586"],
+		"fruit": ["G2590"],
+		"seed": ["G4690"], "seed-bearing": ["G4690"],
+		"soul": ["G5590"], "souls": ["G5590"],
+		"life": ["G2222"],
+		"death": ["G2288"], "die": ["G2288"], "died": ["G2288"],
+		"son": ["G5207"], "sons": ["G5207"],
+		"children": ["G5043"],
+		"father": ["G3962"],
+		"serpent": ["G3789"],
+		"blood": ["G129"],
+		"word": ["G3056"], "words": ["G3056"],
+		"grace": ["G5485"],
+		"said": ["G2036", "G3004"],
+		"saw": ["G3708", "G1492"],
+		"called": ["G2564"],
+		"blessed": ["G2127"],
+		"good": ["G2570", "G18"],
+	};
+
+	function getStrongsForWord(word: string): string[] {
+		const cleaned = word.replace(/[.,;:!?'"()]/g, '');
+		return englishToStrongs[cleaned] || englishToStrongs[cleaned.toLowerCase()] || [];
+	}
+
+	function clearHighlights() {
+		document.querySelectorAll('.highlighted').forEach(el => {
+			el.classList.remove('highlighted');
+		});
+	}
+
+	// English word click -> highlight corresponding Greek word(s)
+	document.querySelectorAll('.english-word').forEach(word => {
+		word.addEventListener('click', (e) => {
+			e.stopPropagation();
+			clearHighlights();
+
+			const englishText = (word as HTMLElement).textContent || '';
+			const strongsNumbers = getStrongsForWord(englishText);
+			const verse = word.closest('.interlinear-verse');
+
+			// Highlight the clicked English word
+			word.classList.add('highlighted');
+
+			if (verse && strongsNumbers.length > 0) {
+				// Find and highlight Greek words with matching Strong's numbers
+				verse.querySelectorAll('.greek-word').forEach(gw => {
+					const strongs = (gw as HTMLElement).dataset.strongs;
+					if (strongs && strongsNumbers.includes(strongs)) {
+						gw.classList.add('highlighted');
+					}
+				});
+			}
+			// If no Strong's mapping exists, just keep the English word highlighted
+		});
+	});
+
+	// Greek word click -> highlight corresponding English word(s)
+	document.querySelectorAll('.greek-word').forEach(word => {
+		word.addEventListener('click', (e) => {
+			// Don't interfere with definition popup
+			if ((e.target as HTMLElement).closest('#definition-popup')) return;
+
+			const strongs = (word as HTMLElement).dataset.strongs;
+			if (!strongs) return;
+
+			// Find English words that map to this Strong's number
+			const matchingEnglish: string[] = [];
+			for (const [eng, strongsList] of Object.entries(englishToStrongs)) {
+				if (strongsList.includes(strongs)) {
+					matchingEnglish.push(eng.toLowerCase());
+				}
+			}
+
+			if (matchingEnglish.length > 0) {
+				const verse = word.closest('.interlinear-verse');
+				if (verse) {
+					verse.querySelectorAll('.english-word').forEach(ew => {
+						const text = (ew as HTMLElement).textContent?.replace(/[.,;:!?'"()]/g, '').toLowerCase();
+						if (text && matchingEnglish.includes(text)) {
+							ew.classList.add('highlighted');
+						}
+					});
+				}
+			}
+
+			// The Greek word itself gets highlighted via the existing logic
+			word.classList.add('highlighted');
+		});
+	});
+
+	// Clear highlights when clicking elsewhere
+	document.addEventListener('click', (e) => {
+		const target = e.target as HTMLElement;
+		if (!target.closest('.english-word') &&
+		    !target.closest('.greek-word') &&
+		    !target.closest('#definition-popup')) {
+			clearHighlights();
+		}
+	});
+</script>
+
+<style>
+	article {
+		font-family: "Libertinus Serif Display", Georgia, serif;
+	}
+</style>
