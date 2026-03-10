@@ -1,0 +1,7 @@
+services:
+  septuagint-interactive:
+    image: registry.home.lukeboyle.com/septuagint-interactive:${SEPTUAGINT_VERSION:-latest}
+    container_name: septuagint-interactive
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-80}:80"
